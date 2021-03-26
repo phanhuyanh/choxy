@@ -20,7 +20,7 @@ class Choxy {
   update(key, value) {
     if(this.store[key] === value) return
     this.store[key] = value
-    this.#reactive(key)
+    this.#reactive(key, value)
   }
   remove(key) {
     delete this.store[key]
@@ -48,11 +48,11 @@ class Choxy {
       cb()
     }
   }
-  #reactive(key) {
+  #reactive(key, value) {
     if(!this.#pool[key]) return
     for(let id in this.#pool[key]) {
       let {cb} = this.#pool[key][id]
-      Promise.resolve(cb())
+      Promise.resolve(cb(value))
     }
   }
 }
