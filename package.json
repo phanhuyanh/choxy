@@ -1,8 +1,8 @@
 {
   "name": "choxy",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "The reactive state management system and wrapper for IndexedDB",
-  "main": "./dist/main.js",
+  "main": "dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "nodemon server.js",
@@ -16,6 +16,15 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/phanhuyanh/choxy"
+  },
+  "keywords": [
+    "indexeddb",
+    "browser",
+    "database",
+    "reactive manager system"
+  ],
+  "bugs": {
+    "url": "https://github.com/phanhuyanh/choxy/issues"
   },
   "dependencies": {
     "@babel/core": "^7.13.10",
