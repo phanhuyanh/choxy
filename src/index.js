@@ -59,6 +59,7 @@ class Choxy {
 
 Choxy.prototype.idb = IDB
 
-const choxy = new Choxy()
+var choxy = new Choxy()
 window.choxy = choxy
-export default choxy
+module.exports = choxy
+//export default choxy
