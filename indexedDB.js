@@ -29,13 +29,10 @@ class IDB {
     console.error('Error open database', evt.target.errorCode)
   }
   #handleSuccess(evt) {
-    console.log('Open database')
     this.db = evt.target.result
     this.#versionChange()
-    console.log('done success')
   }
   async #handleUpgrade(evt) {
-    console.log('Upgrade database')
     return await new Promise((res, rej) => {
       this.db = evt.target.result
       this.#versionChange()
@@ -53,7 +50,6 @@ class IDB {
           objectStore.createIndex(name, name, {unique: isUnique})
         })
       }
-      console.log('done')
       res(true)
     })
   }
