@@ -1,6 +1,6 @@
 {
   "name": "choxy",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "The reactive state management system and wrapper for IndexedDB",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,10 @@
   },
   "author": "phanhuyanh",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phanhuyanh/choxy"
+  },
   "dependencies": {
     "@babel/core": "^7.13.10",
     "babel-loader": "^8.2.2",
