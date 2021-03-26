@@ -1,6 +1,6 @@
 {
   "name": "choxy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The reactive state management system and wrapper for IndexedDB",
   "main": "index.js",
   "scripts": {
