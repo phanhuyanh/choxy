@@ -61,5 +61,4 @@ Choxy.prototype.idb = IDB
 
 var choxy = new Choxy()
 window.choxy = choxy
-module.exports = choxy
-//export default choxy
+export default choxy
