@@ -140,6 +140,4 @@ class IDB {
   }
 }
 
-// const idb = new IDB()
-// window.idb = idb
 export default IDB
