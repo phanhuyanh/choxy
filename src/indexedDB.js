@@ -1,4 +1,5 @@
 import { isObject } from './common.js'
+import IDBObjectStore from './IDBObjectStore.js'
 const indexedDB = window.indexedDB
 
 class IDB {
@@ -134,6 +135,11 @@ class IDB {
       alert("A new version of this page is ready. Please reload or close this tab!")
     }
   }
+}
+
+IDB.prototype.range = function(objectStore) {
+  objectStore = this.db.transaction(objectStore).objectStore(objectStore)
+  return new IDBObjectStore(objectStore)
 }
 
 export default IDB
