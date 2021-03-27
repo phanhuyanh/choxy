@@ -2,3 +2,4 @@ src/
 server.js
 webpack.config.js
 node_modules/
+index.html

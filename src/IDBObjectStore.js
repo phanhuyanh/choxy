@@ -8,6 +8,7 @@ class IDBOjbectStore {
 }
 
 IDBOjbectStore.prototype.where = function(index) {
+  if(index === this.objectStore.keyPath) return console.error('This is primaryKey not index. Intances, use method get') 
   index = this.objectStore.index(index)
   return new IDBIndex(index)
 }
