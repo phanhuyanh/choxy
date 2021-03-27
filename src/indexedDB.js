@@ -113,7 +113,7 @@ class IDB {
     })
     return records
   }
-  cursor(objectStore, {IDBKeyRange, direction}, callback) {
+  cursor(objectStore, callback) {
     objectStore = this.db.transaction(objectStore).objectStore(objectStore)
     objectStore.openCursor(IDBKeyRange, direction).onsuccess = evt => {
       let cursor = evt.target.result
