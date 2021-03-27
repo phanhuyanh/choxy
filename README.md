@@ -150,3 +150,37 @@ db.index(table, field, value)
 entry = await db.index('customers', 'name', 'john') // Return entry has id smallest
 
 ```
+
+#### Find range above
+```js
+await db.range(table).where(field).above(x)
+
+```
+
+#### Find range aboveOrEqual
+```js
+await db.range(table).where(field).aboveOrEqual(x)
+
+```
+
+#### Find range below
+```js
+await db.range(table).where(field).below(y)
+
+```
+
+#### Find range belowOrEqual
+```js
+await db.range(table).where(field).belowOrEqual(y)
+
+```
+
+#### Find between 
+```js
+await db.range(table).where(field).between(x, y, equalX, equalY)
+
+// equalX: false, equalY: false   --> >= x and <= y
+// equalX: false, equalY: true    --> >=x and < y
+// equalX: true, equalY: false    --> < x and <= y
+// equalX: true, equalY: true     --> < x and < y
+```
