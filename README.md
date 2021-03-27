@@ -92,15 +92,7 @@ If primaryKey equal ``` ++id ``` then autoincrement start from 1
 ```js
 db = new choxy.idb('MyDatabase', 1, {
   friends: '++id,name,age',        // first field is id
-  customers: 's
-  
-  
-  
-  
-  
-  
-  
-  ,name,age,&email' // With field is unique then add prefix '&' for field
+  customers: 'snn,name,age,&email' // With field is unique then add prefix '&' for field
 })
 
 await db.init() 
