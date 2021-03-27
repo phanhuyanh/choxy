@@ -92,7 +92,15 @@ If primaryKey equal ``` ++id ``` then autoincrement start from 1
 ```js
 db = new choxy.idb('MyDatabase', 1, {
   friends: '++id,name,age',        // first field is id
-  customers: 'ssn,name,age,&email' // With field is unique then add prefix '&' for field
+  customers: 's
+  
+  
+  
+  
+  
+  
+  
+  ,name,age,&email' // With field is unique then add prefix '&' for field
 })
 
 await db.init() 
@@ -102,7 +110,7 @@ await db.init()
 #### Add entry to Table
 
 ```js
-status = await db.add('customers', {sn: '111-11-1111', name: 'john', email: 'john@gmail.com', age: 24})
+status = await db.add('customers', {snn: '111-11-1111', name: 'john', email: 'john@gmail.com', age: 24})
 
 If status equal true then add success and opposite
 
@@ -118,7 +126,7 @@ status = await db.remove('customers', '111-11-1111')
 #### Update entry to Table
 
 ```js
-status = await db.update('customers', '111-11-1111', {sn: '111-11-1111', name: 'john', email: 'john@gmail.com', age: 27})
+status = await db.update('customers', '111-11-1111', {snn: '111-11-1111', name: 'john', email: 'john@gmail.com', age: 27})
 
 ```
 
