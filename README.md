@@ -122,6 +122,12 @@ status = await db.update('customers', '111-11-1111', {snn: '111-11-1111', name: 
 
 ```
 
+#### Clear all entry from Table
+```js
+status = await db.clear('customers')
+
+```
+
 #### Get entry from Table
 
 ```js
