@@ -129,6 +129,13 @@ class IDB {
     let index = objectStore.index(name)
     return await new Promise(res => index.get(value).onsuccess = evt => res(evt.target.result))
   }
+  async clear(objectStore) {
+    let request = this.db.transaction(objectStore, 'readwrite').objectStore(objectStore).clear()
+    return await new Promise((res, rej) => {
+      request.onsuccess = _ => res(true)
+      request.onerror = evt => console.error('Error clear all entry: ', evt.target.errorCode), rej(false)
+    })
+  }
   #versionChange() {
     this.db.onversionchange = _ => {
       this.db.close()
