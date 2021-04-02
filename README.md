@@ -76,8 +76,14 @@ choxy.unwatch(key, id)
 ## Wrapper for IndexedDB
 
 #### Create database
+
 ```js
-new choxy.idb(nameDatabase, version, tables)
+db = new choxy.idb('MyDatabase')
+
+await db.version(1).create({
+  friends: '++id,name,age',        // first field is id
+  customers: 'snn,name,age,&email' // With field is unique then add prefix '&' for field
+})
 
 ```
 
@@ -89,101 +95,99 @@ new choxy.idb(nameDatabase, version, tables)
 
 If primaryKey equal ``` ++id ``` then autoincrement start from 1
 
-```js
-db = new choxy.idb('MyDatabase', 1, {
-  friends: '++id,name,age',        // first field is id
-  customers: 'snn,name,age,&email' // With field is unique then add prefix '&' for field
-})
-
-await db.init() 
-
-```
 
 #### Add entry to Table
 
 ```js
-status = await db.add('customers', {snn: '111-11-1111', name: 'john', email: 'john@gmail.com', age: 24})
+status = await db.query('customers').add({snn: '111-11-1111', name: 'john', email: 'john@gmail.com', age: 24})
 
-If status equal true then add success and opposite
+If status equal true then add success and otherwise
 
 ```
 
 #### Remove entry to Table
 
 ```js
-status = await db.remove('customers', '111-11-1111')
+status = await db.query('customers').delete('111-11-1111')
 
 ```
 
 #### Update entry to Table
 
 ```js
-status = await db.update('customers', '111-11-1111', {snn: '111-11-1111', name: 'john', email: 'john@gmail.com', age: 27})
+status = await db.query('customers').update('111-11-1111', {snn: '111-11-1111', name: 'john', email: 'john@gmail.com', age: 27})
 
 ```
 
 #### Clear all entry from Table
 ```js
-status = await db.clear('customers')
+status = await db.query('customers').clear()
 
 ```
 
 #### Get entry from Table
 
 ```js
-entry = await db.get('customers', '111-11-1111')
+entry = await db.query('customers').get('111-11-1111')
 
 ```
 
 #### Get all entries from Table
 ```js
-entries = await db.getAll('customers')
+entries = await db.query('customers').getAll().offset(1).limit(4).sortBy((a,b) => b.age - a.age).toArray()
+
+```
+
+``` offset ```: Get entries from index offset
+
+``` limit ```: Return limit entries
+
+``` sortBy ```: Take callback which similar Array.sort()
+
+``` toArray ```: Necessary return entries as array
+
+#### Get Count entries from Table
+
+```js
+count = await db.query('customers').count()
 
 ```
 
 #### Iterate each entry from Table
 ```js
-db.cursor('customers', entry => {
-  console.log(`Key: ${entry.key}, value: ${entry.value}`)
+db.query('customers').forEach(entry => {
+  console.log('Key: ', entry.key, 'Value: ', entry.value)
 })
-
-```
-
-#### Find field using Index
-```js
-db.index(table, field, value)
-
-entry = await db.index('customers', 'name', 'john') // Return entry has id smallest
 
 ```
 
 #### Find range above
 ```js
-await db.range(table).where(field).above(x)
+await db.query(table).where(field).above(x)
 
 ```
 
 #### Find range aboveOrEqual
 ```js
-await db.range(table).where(field).aboveOrEqual(x)
+await db.query(table).where(field).aboveOrEqual(x)
 
 ```
 
 #### Find range below
 ```js
-await db.range(table).where(field).below(y)
+await db.query(table).where(field).below(y)
 
 ```
 
 #### Find range belowOrEqual
 ```js
-await db.range(table).where(field).belowOrEqual(y)
+await db.query(table).where(field).belowOrEqual(y)
 
 ```
 
 #### Find between 
 ```js
-await db.range(table).where(field).between(x, y, equalX, equalY)
+await db.query(table).where(field).between(x, y, equalX, equalY)
 
 // equalX: false, equalY: false   --> >= x and <= y
 // equalX: false, equalY: true    --> >=x and < y
