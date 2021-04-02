@@ -1,152 +1,47 @@
-import { isObject } from './common.js'
+import IDBOpenRequest from './IDBOpenRequest.js'
 import IDBObjectStore from './IDBObjectStore.js'
+import { isPositiveNumber } from './common.js'
+
 const indexedDB = window.indexedDB
 
 class IDB {
-  #nameDatabase
-  #version
-  constructor(name, version, tables) {
+  constructor(name) {
+    this.name = name
     this.db = null
-    this.#nameDatabase = name
-    this.#version = version
-    this.tables = tables
+  }
+  version(version) {
+    if(!isPositiveNumber(version)) return console.error(`Version must positive number`) 
+    
+    return new IDBOpenRequest(this, this.name, version)
   }
   async init() {
-    let request = indexedDB.open(this.#nameDatabase, this.#version)
+    let request = indexedDB.open(this.name)
 
-    await new Promise((res, rej) => {
+    return new Promise((res, rej) => {
       request.onerror = evt => {
-        this.#handleError(evt)
+        console.error(`Error open database ${this.name}: `, evt.error)
         rej(false)
       }
-      request.onsuccess = async evt => {
-        this.#handleSuccess(evt)
+
+      request.onblocked = evt => {
+        evt.target.result.close()
+        console.error("Please close all other tabs with this site open!")
+        rej(false)
+      }
+
+      request.onsuccess = evt => {
+        this.db = evt.target.result
         res(true)
       }
-      request.onupgradeneeded = evt => this.#handleUpgrade(evt)
     })
   }
-  #handleError(evt) {
-    console.error('Error open database', evt.target.errorCode)
+  query(objectStore) {
+    objectStore = this.db.transaction(objectStore, 'readwrite').objectStore(objectStore)
+    return new IDBObjectStore(objectStore)
   }
-  #handleSuccess(evt) {
-    this.db = evt.target.result
-    this.#versionChange()
+  _on(db) {
+    this.db = db
   }
-  async #handleUpgrade(evt) {
-    return await new Promise((res, rej) => {
-      this.db = evt.target.result
-      this.#versionChange()
-      if(!isObject(this.tables)) return rej(false)
-
-      for(let nameObjStore in this.tables) {
-        let columns = this.tables[nameObjStore]
-        if(typeof columns !== 'string') continue
-        let [id, ...indexs] = columns.split`,`.map(e => e.trim())
-        let objectStore = this.db.createObjectStore(nameObjStore, id === '++id' ? {autoIncrement: true} : {keyPath: id})
-
-        indexs.map(index => {
-          let isUnique = index[0] === '&'
-          let name = isUnique ? index.slice(1) : index
-          objectStore.createIndex(name, name, {unique: isUnique})
-        })
-      }
-      res(true)
-    })
-  }
-  async add(objectStore, data) {
-    let request = this.db.transaction(objectStore, 'readwrite').objectStore(objectStore).add(data)
-    let status = await new Promise((res, rej) => {
-      request.onerror = evt => {
-        console.error('Error add data to database: ', evt.target.errorCode)
-        rej(false)
-      }
-      request.onsuccess = _ => res(true)
-    })
-    return status
-  }
-  async remove(objectStore, id) {
-    let request = this.db.transaction(objectStore, 'readwrite').objectStore(objectStore).delete(id)
-    let status = await new Promise((res, rej) => {
-      request.onerror = evt => {
-        console.error('Error delete entry from database: ', evt.target.errorCode)
-        rej(false)
-      }
-      request.onsuccess = _ => res(true)
-    })
-    return status
-  }
-  async update(objectStore, id, data) {
-    let objStore = this.db.transaction(objectStore, 'readwrite').objectStore(objectStore)
-    let request = objStore.get(id)
-
-    request.onerror = evt => console.error('Error get entry from database: ', objectStore)
-
-    let status = await new Promise((res, rej) => {
-      request.onsuccess = evt => {
-        let requestUpdate = objStore.put(data)
-        requestUpdate.onerror = evt => {
-          console.error('Error update entry from database: ', evt.target.errorCode)
-          rej(false)
-        }
-        requestUpdate.onsuccess = _ => res(true)
-      }
-    })
-    return status
-  }
-  async get(objectStore, id) {
-    let request = this.db.transaction(objectStore).objectStore(objectStore).get(id)
-  
-    let record = await new Promise((res, rej) => {
-      request.onsuccess = evt => res(evt.target.result)
-      request.onerror = evt => {
-        console.error('Error get entry from database: ', evt.target.errorCode)
-        rej(false)
-      }
-    })
-
-    return record
-  }
-  async getAll(objectStore) {
-    objectStore = this.db.transaction(objectStore).objectStore(objectStore)
-    let records = await new Promise((res, rej) => {
-      objectStore.getAll().onsuccess = evt => res(evt.target.result)
-    })
-    return records
-  }
-  cursor(objectStore, callback) {
-    objectStore = this.db.transaction(objectStore).objectStore(objectStore)
-    objectStore.openCursor(IDBKeyRange, direction).onsuccess = evt => {
-      let cursor = evt.target.result
-      if(cursor) {
-        callback(cursor)
-        cursor.continue()
-      }
-    }
-  }
-  async index(objectStore, name, value) {
-    objectStore = this.db.transaction(objectStore).objectStore(objectStore)
-    let index = objectStore.index(name)
-    return await new Promise(res => index.get(value).onsuccess = evt => res(evt.target.result))
-  }
-  async clear(objectStore) {
-    let request = this.db.transaction(objectStore, 'readwrite').objectStore(objectStore).clear()
-    return await new Promise((res, rej) => {
-      request.onsuccess = _ => res(true)
-      request.onerror = evt => console.error('Error clear all entry: ', evt.target.errorCode), rej(false)
-    })
-  }
-  #versionChange() {
-    this.db.onversionchange = _ => {
-      this.db.close()
-      alert("A new version of this page is ready. Please reload or close this tab!")
-    }
-  }
-}
-
-IDB.prototype.range = function(objectStore) {
-  objectStore = this.db.transaction(objectStore).objectStore(objectStore)
-  return new IDBObjectStore(objectStore)
 }
 
 export default IDB
