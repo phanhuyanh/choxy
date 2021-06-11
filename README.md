@@ -93,8 +93,15 @@ await db.version(1).create({
 
 ```tables```: Object store with key is name table and type of value is string format ```primaryKey,field1,field2,...```
 
-If primaryKey equal ``` ++id ``` then autoincrement start from 1
+```++id```: primaryKey autoincrement start from 1
 
+#### Init database
+
+```js
+db = new choxy.idb('MyDatabase')
+
+await db.init()
+```
 
 #### Add entry to Table
 
