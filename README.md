@@ -101,6 +101,7 @@ await db.version(1).create({
 db = new choxy.idb('MyDatabase')
 
 await db.init()
+
 ```
 
 #### Add entry to Table
